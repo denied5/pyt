@@ -32,33 +32,51 @@ def SumOfYi():
     return Yi
 
 
-arrayX = numpy.array([[m, SumOfXi(1), SumOfXi(2), SumOfXi(3)], [SumOfXi(1), SumOfXi(2), SumOfXi(3), SumOfXi(4)],
-                      [SumOfXi(2), SumOfXi(3), SumOfXi(4), SumOfXi(5)],
-                      [SumOfXi(3), SumOfXi(4), SumOfXi(5), SumOfXi(6)]])
-arrayY = numpy.array([SumOfYi(), SumOfXi(1) * SumOfYi(), SumOfXi(2) * SumOfYi(), SumOfXi(3) * SumOfYi()])
-answer = numpy.linalg.solve(arrayX, arrayY)
+def printTable (xi, fxi, pxi):
+    i = 0
+    for i in range(m):
+        tmp = (pxi[i] - fxi[i])*100/fxi[i]
+        print('%5.2f | %7.2f | %7.2f | %7.2f | %7.2f |' % (xi[i], fxi[i], pxi[i], pxi[i] - fxi[i], tmp))
 
-s = (answer[0] + answer[1] + answer[2] + answer[3]) * 2
+def Alloc (n, arrayY, arrayX):
+    answer = numpy.array()
+    i = 1
+    j= 0
+    arrayX[0][0] = m
+    ind = 1
+    for i in range(n):
+        for j in range(n):
+            arrayX[i][j] = SumOfXi(ind)
+            ind = ind + 1
+        arrayY[j] = SumOfYi()*SumOfXi(ind)
+        ind = j + 1
 
-t = numpy.linalg.lstsq(arrayX, arrayY, rcond=-1)
+    answer = numpy.linalg.solve(arrayX, arrayY)
+    return answer
 
-print(t[0][1])
-print(answer[1])
-# print(s)
-# print(myFunction(2))
 
+
+arrayX = []
+arrayY =[]
+n = 4
+answer = Alloc(n, arrayY, arrayX)
+
+# t = numpy.linalg.lstsq(arrayX, arrayY, rcond=-1)
 
 a = []
 b = []
 c = []
 d = []
-i = 1
-for i in range(m):
-    c.append(start + (i - 1) * H)
-    a.append(myFunction(c[i - 1]))
-    b.append((answer[0] + answer[1] + answer[2] + answer[3]) * c[i - 1])
-    d.append((t[0][0] + t[0][1] + t[0][2] + t[0][3]) * c[i - 1])
-    i = i + 1
+i = -1.
+while( i < 3.):
+    c.append(i)
+    a.append(myFunction(i))
+    b.append((answer[0] + answer[1] + answer[2] + answer[3]) * i)
+    i = i + 0.1
+
+printTable(c, a, b)
+
+
 
 plt.plot(c, a)
 plt.plot(c, b)
